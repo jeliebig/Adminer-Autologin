@@ -18,10 +18,18 @@ jobs:
 
       - run: mkdir -p .cache
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
       - uses: actions/cache@v3
         with:
           path: .cache
-          key: ${{ runner.os }}-docker-latest-tag
+          key: ${{ runner.os }}-docker-latest-tag-${{ steps.get-date.outputs.date }}
+          restore-keys: |
+            ${{ runner.os }}-docker-latest-tag-
 
       - id: detect_update
         run: python3 ./detect-image-update.py ghcr.io/jeliebig/${{ github.repository }}
