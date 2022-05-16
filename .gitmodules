@@ -1,0 +1,3 @@
+[submodule "scripts/docker_repo_info"]
+	path = scripts/docker_repo_info
+	url = https://gist.github.com/3506d5ae9a9888ec709c8fcad33cfc34.git
