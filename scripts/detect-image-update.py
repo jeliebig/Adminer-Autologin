@@ -10,17 +10,22 @@ docker_image = "adminer"
 cache_dir = os.path.join(os.path.abspath("../"), ".cache")
 actions_name_update = "update"
 actions_set_output_update = f"::set-output name={actions_name_update}::"
-actions_name_tags = "additional_tags"
+actions_name_tags = "tags"
 actions_set_output_tags = f"::set-output name={actions_name_tags}::"
 actions_image = sys.argv[1]
 
+print(f"Starting detect-image-update with '{actions_image}' and repo_info_dir: '{docker_repo_info_dir}'")
+print("Moving file...")
 shutil.move(os.path.join(docker_repo_info_dir, "0.parse_repo.py"), os.path.join(docker_repo_info_dir, "parse_repo.py"))
 importlib.invalidate_caches()
+print("Importing module...")
 from docker_repo_info.parse_repo import parse
 
+print("Running...")
 latest_tag = requests.get(
     f"https://raw.githubusercontent.com/docker-library/repo-info/master/repos/{docker_image}/remote/latest.md")
 if latest_tag.status_code == 200:
+    print("First request done")
     # linux; amd64
     image = parse(latest_tag.text)[0]
     if os.path.isfile(os.path.join(cache_dir, "latest-tag.digest")):
@@ -36,6 +41,7 @@ if latest_tag.status_code == 200:
         tags_request = requests.get(
             f"https://raw.githubusercontent.com/docker-library/official-images/master/library/{docker_image}")
         if tags_request.status_code == 200:
+            print("Second request done")
             import re
             tags = re.search(r'Tags\: .*, latest', tags_request.text).group().split(" ")[1:]
             tags = [f"{actions_image}:" + x.replace(",", "") for x in tags]
