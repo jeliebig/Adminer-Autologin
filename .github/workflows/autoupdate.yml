@@ -31,6 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: check_image_update
     if: ${{ needs.check_image_update.outputs.update == true }}
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v3
