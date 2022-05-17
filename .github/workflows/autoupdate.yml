@@ -13,8 +13,8 @@ jobs:
   check_image_update:
     runs-on: ubuntu-latest
     outputs:
-      update: ${{ steps.detect_update.update }}
-      tags: ${{ steps.detect_update.tags }}
+      update: ${{ steps.detect_update.outputs.update }}
+      tags: ${{ steps.get_tags.outputs.tags }}
 
     steps:
       - uses: actions/checkout@v3
@@ -39,7 +39,16 @@ jobs:
             ${{ runner.os }}-docker-latest-tag-
 
       - id: detect_update
-        run: python3 ./detect-image-update.py ghcr.io/jeliebig/${{ github.repository }}
+        run: |
+          output=$(python3 ./detect-image-update.py)
+          echo "::set-output name=update::$output"
+        working-directory: scripts
+
+      - id: get_tags
+        if: ${{ steps.detect_update.outputs.update == 'true' }}
+        run: |
+          output=$(python3 ./get-image-tags.py ghcr.io/${{ github.repository }})
+          echo "::set-output name=tags::$output"
         working-directory: scripts
 
   update_image:
