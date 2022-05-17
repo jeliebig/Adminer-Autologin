@@ -2,6 +2,8 @@
 
 Please only use this image in a local development environment.
 
+This image will auto-update every 30 days (if a new offical Docker image was released).
+
 ## Usage
 
 Load the Adminer plugin `login-env-vars` and set the following env vars to login automatically.
