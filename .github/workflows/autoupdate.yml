@@ -18,16 +18,16 @@ jobs:
 
       - run: mkdir -p .cache
 
-      - name: Get Date
-        id: get-date
+      - name: Get Datetime
+        id: get-datetime
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+          echo "::set-output name=datetime::$(/bin/date -u "+%Y%m%d%H%M%S%N")"
         shell: bash
 
       - uses: actions/cache@v3
         with:
           path: .cache
-          key: ${{ runner.os }}-docker-latest-tag-${{ steps.get-date.outputs.date }}
+          key: ${{ runner.os }}-docker-latest-tag-${{ steps.get-datetime.outputs.datetime }}
           restore-keys: |
             ${{ runner.os }}-docker-latest-tag-
 
