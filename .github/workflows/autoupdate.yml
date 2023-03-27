@@ -27,7 +27,7 @@ jobs:
         id: get-datetime
         if: ${{ github.event.inputs.ignore_cache != 'true' }}
         run: |
-          echo "::set-output name=datetime::$(/bin/date -u "+%Y%m%d%H%M%S%N")"
+          echo "datetime=$(/bin/date -u '+%Y%m%d%H%M%S%N')" >> $GITHUB_OUTPUT
         shell: bash
 
       - uses: actions/cache@v3
@@ -41,14 +41,14 @@ jobs:
       - id: detect_update
         run: |
           output=$(python3 ./detect-image-update.py)
-          echo "::set-output name=update::$output"
+          echo "update=$output" >> $GITHUB_OUTPUT
         working-directory: scripts
 
       - id: get_tags
         if: ${{ steps.detect_update.outputs.update == 'true' }}
         run: |
           output=$(python3 ./get-image-tags.py ghcr.io/${{ github.repository }})
-          echo "::set-output name=tags::$output"
+          echo "tags=$output" >> $GITHUB_OUTPUT
         working-directory: scripts
 
   update_image:
